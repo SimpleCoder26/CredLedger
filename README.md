@@ -19,6 +19,69 @@
 
 ---
 
+## 📖 Product Overview & Problem Statement
+
+### The Problem
+The education and professional certification industry is plagued by fraudulent credentials. Fake degrees, forged participation certificates, and unverifiable skill endorsements cost organizations billions in verification overhead and erode trust globally. Traditional PDF certificates can be trivially cloned, edited, or redistributed by malicious actors, making standard verification systems slow, manual, and fundamentally insecure.
+
+### The Solution: CredLedger
+CredLedger introduces a **Verifiable Digital Credential Passport**. Every certificate is cryptographically secured on the Stellar blockchain, ensuring absolute provenance and instant verification.
+
+- **Tamper-Proof Certificates**: Organizations issue certificates as unique, immutable records on-chain. A SHA-256 data hash of the credential's content is permanently stored on the Soroban smart contract.
+- **Dual-Contract Architecture**: We separate **Role-Based Access Control (RBAC)** from credential registry logic. Only verified, authorized issuers (registered by an admin in the `CredIssuer` contract) can issue credentials via the `CredentialRegistry` contract.
+- **Sequential On-Chain Batch Signing**: For CSV-based bulk issuance, CredLedger implements a sequential wallet signing loop that prompts the issuer to authenticate each credential individually, ensuring every single certificate receives its own genuine `transactionHash` on the Stellar network.
+- **Instant QR Verification**: Anyone can scan the QR code on a physical or digital certificate to instantly read its provenance, verify authenticity against the Stellar ledger via Stellar Expert, and confirm the credential hasn't been revoked.
+- **Revocation & Lifecycle**: If a certificate is revoked by the original issuer, the on-chain status is updated to `is_revoked: true`, instantly invalidating the QR code scan for any future verifiers.
+
+---
+
+## 🏗️ Architecture & Core Mechanism
+
+### High-Level System Architecture
+
+```mermaid
+graph TD
+    A[Issuer / Organization] -->|Issues Credential| B(CredentialRegistry Smart Contract)
+    B -->|Cross-Contract Auth| C(CredIssuer RBAC Registry)
+    C -.->|Returns Auth Result| B
+    B -->|Stores Data Hash & Emits Event| D[(Stellar Testnet)]
+    E[Verifier / Public] -->|Scans QR & Reads Provenance| D
+    F[Next.js App Router] -->|CRUD & Analytics| G[(Prisma PostgreSQL DB)]
+    F -->|Signs Transactions| H[Freighter Wallet via StellarWalletsKit]
+```
+
+### Smart Contract Execution Sequence
+
+We implemented a **Dual-Contract Architecture** for security, upgradability, and modularity:
+
+1. **CredIssuer Contract (`cred-issuer`)**
+   - **Role:** Handles strict Role-Based Access Control (RBAC).
+   - **Storage:** Persists `Admin` and an authorized `Issuer(Address)` registry using Soroban persistent storage.
+   - **Functions:** `init`, `add_issuer`, `remove_issuer`, `is_issuer`, `upgrade`.
+
+2. **CredentialRegistry Contract (`cred-registry`)**
+   - **Role:** Handles the actual issuance, verification, and revocation of credentials.
+   - **Storage:** Persists `Credential` structs containing `issuer`, `data_hash`, `issue_date`, and `is_revoked` state.
+   - **Inter-Contract Communication:** When a user calls `issue_credential()`, the Registry contract dynamically invokes the CredIssuer contract via `contractimport!` to assert the caller is an authorized issuer.
+   - **Event Emission:** Emits `issued` and `revoked` events for frontend subscription and real-time activity feeds.
+
+**Inter-Contract Communication Flow:**
+```mermaid
+sequenceDiagram
+    participant UI as Next.js Client
+    participant Registry as CredentialRegistry
+    participant RBAC as CredIssuer (RBAC)
+    
+    UI->>Registry: invoke issue_credential(caller, id, hash, date)
+    Registry->>RBAC: invoke is_issuer(caller)
+    RBAC-->>Registry: true
+    Registry->>Registry: Store Credential Data
+    Registry->>Registry: Emit "issued" Event
+    Registry-->>UI: Success & txHash
+```
+
+---
+
 ## 🛡️ Contract Addresses & Verifiable Links
 
 The core logic and credential state are secured on the Stellar Testnet. You can instantly verify the smart contracts and the latest transactions via Stellar Expert:
@@ -74,68 +137,6 @@ The core logic and credential state are secured on the Stellar Testnet. You can 
 
 ---
 
-## 📖 Product Overview & Problem Statement
-
-### The Problem
-The education and professional certification industry is plagued by fraudulent credentials. Fake degrees, forged participation certificates, and unverifiable skill endorsements cost organizations billions in verification overhead and erode trust globally. Traditional PDF certificates can be trivially cloned, edited, or redistributed by malicious actors, making standard verification systems slow, manual, and fundamentally insecure.
-
-### The Solution: CredLedger
-CredLedger introduces a **Verifiable Digital Credential Passport**. Every certificate is cryptographically secured on the Stellar blockchain, ensuring absolute provenance and instant verification.
-- **Tamper-Proof Certificates**: Organizations issue certificates as unique, immutable records on-chain. A SHA-256 data hash of the credential's content is permanently stored on the Soroban smart contract.
-- **Dual-Contract Architecture**: We separate Role-Based Access Control (RBAC) from credential registry logic. Only verified, authorized issuers (registered by an admin in the `CredIssuer` contract) can issue credentials via the `CredentialRegistry` contract.
-- **Sequential On-Chain Batch Signing**: For CSV-based bulk issuance, CredLedger implements a sequential wallet signing loop that prompts the issuer to authenticate each credential individually, ensuring every single certificate receives its own genuine `transactionHash` on the Stellar network.
-- **Instant QR Verification**: Anyone can scan the QR code on a physical or digital certificate to instantly read its provenance, verify authenticity against the Stellar ledger via Stellar Expert, and confirm the credential hasn't been revoked.
-- **Revocation & Lifecycle**: If a certificate is revoked by the original issuer, the on-chain status is updated to `is_revoked: true`, instantly invalidating the QR code scan for any future verifiers.
-
----
-
-## 🏗️ Architecture & Core Mechanism
-
-### High-Level System Architecture
-
-```mermaid
-graph TD
-    A[Issuer / Organization] -->|Issues Credential| B(CredentialRegistry Smart Contract)
-    B -->|Cross-Contract Auth| C(CredIssuer RBAC Registry)
-    C -.->|Returns Auth Result| B
-    B -->|Stores Data Hash & Emits Event| D[(Stellar Testnet)]
-    E[Verifier / Public] -->|Scans QR & Reads Provenance| D
-    F[Next.js App Router] -->|CRUD & Analytics| G[(Prisma PostgreSQL DB)]
-    F -->|Signs Transactions| H[Freighter Wallet via StellarWalletsKit]
-```
-
-### Smart Contract Execution Sequence
-
-We implemented a **Dual-Contract Architecture** for security, upgradability, and modularity:
-
-1. **CredIssuer Contract (`cred-issuer`)**
-   - **Role:** Handles strict Role-Based Access Control (RBAC).
-   - **Storage:** Persists `Admin` and an authorized `Issuer(Address)` registry using Soroban persistent storage.
-   - **Functions:** `init`, `add_issuer`, `remove_issuer`, `is_issuer`, `upgrade`.
-
-2. **CredentialRegistry Contract (`cred-registry`)**
-   - **Role:** Handles the actual issuance, verification, and revocation of credentials.
-   - **Storage:** Persists `Credential` structs containing `issuer`, `data_hash`, `issue_date`, and `is_revoked` state.
-   - **Inter-Contract Communication:** When a user calls `issue_credential()`, the Registry contract dynamically invokes the CredIssuer contract via `contractimport!` to assert the caller is an authorized issuer.
-   - **Event Emission:** Emits `issued` and `revoked` events for frontend subscription and real-time activity feeds.
-
-**Inter-Contract Communication Flow:**
-```mermaid
-sequenceDiagram
-    participant UI as Next.js Client
-    participant Registry as CredentialRegistry
-    participant RBAC as CredIssuer (RBAC)
-    
-    UI->>Registry: invoke issue_credential(caller, id, hash, date)
-    Registry->>RBAC: invoke is_issuer(caller)
-    RBAC-->>Registry: true
-    Registry->>Registry: Store Credential Data
-    Registry->>Registry: Emit "issued" Event
-    Registry-->>UI: Success & txHash
-```
-
----
-
 ## 🚀 Features & Tech Stack
 
 **Frontend Layer**
@@ -145,7 +146,7 @@ sequenceDiagram
 - **State Management**: Zustand (Global Store with `persist` middleware)
 - **Wallet Integration**: StellarWalletsKit v2.5.0 (Freighter support)
 - **Data Fetching**: React Query (TanStack Query v5)
-- **PDF Generation**: @react-pdf/renderer for downloadable certificates
+- **PDF Generation**: `@react-pdf/renderer` for downloadable certificates
 - **Charts**: Recharts for analytics dashboards
 
 **Blockchain & Backend Layer**
@@ -163,19 +164,66 @@ sequenceDiagram
 To achieve a seamless, Web2-like user experience while maintaining Web3 immutability, CredLedger leverages a hybrid architecture:
 
 1. **Next.js API Routes & Prisma**:
-   - When credentials are issued, the frontend calls `/api/issue` to persist batch and certificate data (recipient emails, dynamic CSV data, data hashes) in our PostgreSQL database via Prisma ORM.
-   - This allows us to power complex features like batch history, analytics dashboards, and instant QR lookups without burdening the user with gas fees for every database query.
+   - When credentials are issued, the frontend calls `/api/issue` to persist batch and certificate data in PostgreSQL via Prisma.
+   - This powers complex features like personalized batch history, analytics dashboards, and instant QR lookups without burdening the user with gas fees for every query.
 
 2. **Soroban Smart Contracts (Rust)**:
-   - The heavy lifting of **trust** is handled on-chain. The `CredentialRegistry` contract relies on the `CredIssuer` contract via a cross-contract call (`contractimport!`) to assert that the caller's `Address` is whitelisted as an authorized issuer.
-   - Instead of storing massive credential payloads on the ledger, we compute a **SHA-256 hash** of the credential data and only store the `data_hash` on-chain. This guarantees data integrity while keeping transaction costs negligible.
+   - The heavy lifting of **trust** is handled on-chain. The `CredentialRegistry` contract relies on the `CredIssuer` contract via a cross-contract call (`contractimport!`) to assert that the caller's `Address` is whitelisted.
+   - Instead of storing massive payloads on the ledger, we compute a **SHA-256 hash** of the credential data and only store the `data_hash` on-chain. 
 
 3. **StellarWalletsKit & RPC Integration**:
-   - The frontend uses `StellarWalletsKit` to seamlessly connect to the Freighter extension. When an issuer creates a credential, the browser delegates the signing of the XDR payload to the wallet.
-   - We poll the Soroban RPC (`server.getTransaction`) to fetch live ledger confirmation, ensuring the UI reflects the true on-chain state instantly with pending → processing → confirmed transitions.
+   - The frontend uses `StellarWalletsKit` to securely connect to the Freighter extension. When an issuer creates a credential, the browser delegates the XDR signing to the wallet.
+   - We poll the Soroban RPC (`server.getTransaction`) to fetch live ledger confirmations.
 
 4. **Transaction Lifecycle UI**:
-   - Every transaction goes through a visible lifecycle: `pending` (awaiting wallet signature) → `processing` (submitted to Soroban RPC, polling for confirmation) → `confirmed` (on-chain) or `failed` (with error message and retry option).
+   - Every transaction goes through a visible lifecycle: `pending` (awaiting wallet signature) → `processing` (submitted to RPC, polling) → `confirmed` (on-chain) or `failed`.
+
+---
+
+## 📸 Platform Previews Gallery
+
+| 🌟 Hero & Dashboard | 🧰 Multi-Wallet Support |
+| :---: | :---: |
+| *A sleek, professional landing page. Connect your Freighter wallet to sign and submit credentials directly to the Stellar network.* | *Seamlessly connect using your preferred Stellar wallet via StellarWalletsKit's unified authentication modal.* |
+| <img src="demo/img/Hero-wallet-connected.png" width="400"/> | <img src="demo/img/multi-wallet.png" width="400"/> |
+
+| 📜 Credential Issuance Feedback | 🔍 Real-time Verification Page |
+| :---: | :---: |
+| *Issue credentials directly on-chain. Generates unique, verifiable QR codes and confirms via real-time toast notifications.* | *Instantly read the entire credential provenance and verify authenticity against the Stellar ledger.* |
+| <img src="demo/img/succesful-issue-toast.png" width="400"/> | <img src="demo/img/sucessfull-testnet.png" width="400"/> |
+
+| 🎓 The Final Verifiable Certificate | 🎨 Dashboard in Night Mode |
+| :---: | :---: |
+| *A beautifully designed, downloadable PDF certificate with an embedded QR code linking to the verification page.* | *Premium UI/UX design showcasing a high-quality Night Mode integration for comfortable extended use.* |
+| <img src="demo/img/an-issued-certific-new.png" width="400"/> | <img src="demo/img/dasboard-in-night-mode.png" width="400"/> |
+
+### 📱 Fully Mobile Responsive
+*(✅ Built with a Fully Mobile-Responsive Architecture)*
+<div align="center">
+  <img src="demo/img/mobile-UI-1.png" alt="Mobile View 1" width="300"/>
+  <img src="demo/img/mobile-ui-2.png" alt="Mobile View 2" width="300"/>
+</div>
+
+### 🧪 Automated CI/CD & Testing Suite
+*(✅ Fully Automated CI/CD Deployment Pipeline via GitHub Actions & 8 Passing Frontend Tests + 3 Rust Contract Tests)*
+<div align="center">
+  <img src="demo/img/ci-cd-pipe-new.png" alt="CI/CD Pipeline" width="800"/>
+  <br/><br/>
+  <img src="demo/img/test-new.png" alt="Frontend Test Suite" width="800"/>
+  <br/><br/>
+  <img src="demo/img/test-2-contracts.png" alt="Contract Test Suite" width="800"/>
+</div>
+
+---
+
+## 🔒 Security Considerations
+
+- **Cross-Contract RBAC Validation:** Blockchain logic is immune to local bypass. The `CredentialRegistry` contract forcibly checks the `CredIssuer` contract state on every `issue_credential` call.
+- **Data Privacy & Personalization:** The Next.js dashboard intelligently routes and isolates credential history queries purely based on the cryptographically connected Freighter wallet session. Issuers exclusively see their own data.
+- **Credential Revocation:** Only the original issuer can revoke a credential. The contract enforces `credential.issuer != caller` checks before allowing revocation.
+- **WASM Upgradability:** Both contracts include an `upgrade(new_wasm_hash)` function restricted to the Admin, ensuring long-term bug fixes.
+- **Wallet Security**: Uses `StellarWalletsKit` to ensure private keys never touch the DOM or React state. All signing is delegated entirely to the secure Freighter extension.
+- **Data Integrity**: SHA-256 hashing ensures the on-chain `data_hash` is a tamper-proof fingerprint of the full credential data stored off-chain.
 
 ---
 
@@ -184,121 +232,21 @@ To achieve a seamless, Web2-like user experience while maintaining Web3 immutabi
 ```text
 CredLedger/
 ├── .github/workflows/          # CI/CD Pipeline (GitHub Actions)
-│   └── ci.yml                  # Dual pipeline: Contracts + Frontend
 ├── contracts/                  # Soroban Smart Contracts Workspace
 │   ├── contracts/cred-issuer/  # Contract 1: RBAC Issuer Registry
-│   │   └── src/
-│   │       ├── lib.rs          # init, add_issuer, remove_issuer, is_issuer, upgrade
-│   │       └── test.rs         # Unit test: test_certifier_flow
 │   ├── contracts/cred-registry/# Contract 2: Credential Registry (Core Logic)
-│   │   └── src/
-│   │       ├── lib.rs          # issue_credential, revoke_credential, verify_credential, upgrade
-│   │       └── test.rs         # Unit test: test_registry_flow (with MockCertifier)
 │   └── Cargo.toml              # Rust Workspace (Soroban SDK v27.0.0)
 ├── src/                        # Next.js Frontend & Backend Application
 │   ├── app/                    # Next.js App Router (Pages & API Routes)
-│   │   ├── page.tsx            # Landing Page (Hero)
-│   │   ├── dashboard/
-│   │   │   ├── issue/          # Batch & Manual Credential Issuance
-│   │   │   ├── history/        # Batch History & Search
-│   │   │   ├── activity/       # Real-time Blockchain Activity Feed
-│   │   │   ├── analytics/      # Issuance Analytics & Charts
-│   │   │   ├── settings/       # Organization Profile Settings
-│   │   │   └── templates/      # Certificate Template Management
-│   │   ├── verify/[id]/        # Public Credential Verification Page
-│   │   ├── c/[id]/             # Public Certificate Render Page
-│   │   └── api/                # Next.js API Routes (issue, certificates, analytics)
-│   ├── components/             # Reusable UI elements (WalletConnect, Navbar, Templates)
-│   │   └── __tests__/          # Vitest test suite (3 files, 6 tests)
-│   ├── lib/                    # Shared utilities (Prisma singleton, utils)
-│   ├── service/                # Blockchain service layer (contract.ts)
-│   └── store/                  # Zustand global state (wallet.ts, settings.ts)
+│   ├── components/             # Reusable UI elements
+│   ├── lib/                    # Shared utilities
+│   ├── service/                # Blockchain service layer
+│   └── store/                  # Zustand global state
 ├── prisma/                     # PostgreSQL Database Schema
-│   └── schema.prisma           # Organization, Template, CertificateBatch, Certificate
 ├── demo/img/                   # Screenshots for documentation
 ├── deploy.sh                   # Testnet deployment script
-├── package.json                # NPM Dependencies
-└── README.md                   # This document
+└── package.json                # NPM Dependencies
 ```
-
-
-
-## 📸 Platform Previews
-
-### 🌟 Hero & Dashboard
-*A sleek, professional landing page. Connect your Freighter wallet to sign and submit credentials directly to the Stellar network.*
-**(✅ Showcasing Wallet Connection State & Live XLM Balance Retrieval)**
-<div align="center">
-  <img src="demo/img/Hero-wallet-connected.png" alt="Hero Dashboard" width="800"/>
-</div>
-
-### 🧰 Multi-Wallet Support
-*Seamlessly connect using your preferred Stellar wallet via StellarWalletsKit's unified authentication modal.*
-**(✅ Supporting Multiple Wallet Provider Options)**
-<div align="center">
-  <img src="demo/img/multi-wallet.png" alt="Multi Wallet Options" width="800"/>
-</div>
-
-### 📜 Credential Issuance & Transaction Feedback
-*Issue credentials directly on-chain. The system generates unique, verifiable QR codes and confirms via real-time toast notifications showing the transaction hash.*
-**(✅ Showcasing a Successful Testnet Transaction with Real-time User Feedback)**
-<div align="center">
-  <img src="demo/img/succesful-issue-toast.png" alt="Successful Issue" width="800"/>
-</div>
-
-### 🔍 Real-time Verification Page
-*Anyone can visit the verification URL or scan the QR code to instantly read the entire credential provenance and verify authenticity against the Stellar ledger via Stellar Expert.*
-**(✅ Successfully verified on Stellar Testnet: Transaction Hash `e6fb32868b2508841d51cd0aa8cb5cff432de839ae8dd15faaf60b7205b92eba`)**
-<div align="center">
-  <img src="demo/img/sucessfull-testnet.png" alt="Verification Page" width="800"/>
-</div>
-
-### 🎓 The Final Product: A Verifiable Certificate
-*A beautifully designed, downloadable PDF certificate with embedded QR code linking to the on-chain verification page.*
-<div align="center">
-  <img src="demo/img/an-issued-certific-new.png" alt="Issued Certificate" width="800"/>
-</div>
-
-### 📱 Fully Mobile Responsive
-*The entire application, including complex dashboards, sidebars, and tables, is completely optimized for seamless mobile usage.*
-**(✅ Built with a Fully Mobile-Responsive Architecture)**
-<div align="center">
-  <img src="demo/img/mobile-UI-1.png" alt="Mobile View 1" width="300"/>
-  <img src="demo/img/mobile-ui-2.png" alt="Mobile View 2" width="300"/>
-</div>
-
-### 🧪 Automated Testing Suite
-*Comprehensive testing ensures platform stability. Our suite includes 8 frontend tests (Vitest + React Testing Library + Integration) and 3 Rust Soroban contract tests.*
-**(✅ Ensuring Stability with 8 Passing Frontend Tests + 3 Rust Contract Tests)**
-<div align="center">
-  <img src="demo/img/test-new.png" alt="Frontend Test Suite" width="800"/>
-  <br/>
-  <br/>
-  <img src="demo/img/test-2-contracts.png" alt="Contract Test Suite" width="800"/>
-</div>
-
-### 🚀 CI/CD Pipeline
-*Automated GitHub Actions trigger on every push and PR to `main`, running ESLint, Vitest, Next.js build, Cargo build, and Cargo test in a dual pipeline.*
-**(✅ Fully Automated CI/CD Deployment Pipeline via GitHub Actions)**
-<div align="center">
-  <img src="demo/img/ci-cd-pipe-new.png" alt="CI/CD Pipeline" width="800"/>
-</div>
-
-### 🎨 Dashboard in Night Mode
-*Premium UI/UX design showcasing a high-quality Night Mode integration for comfortable extended use.*
-<div align="center">
-  <img src="demo/img/dasboard-in-night-mode.png" alt="Night Mode Dashboard" width="800"/>
-</div>
-
----
-
-## 🔒 Security Considerations
-
-- **Cross-Contract RBAC Validation:** Blockchain logic is immune to local bypass. The `CredentialRegistry` contract forcibly checks the `CredIssuer` contract state on every `issue_credential` call via `contractimport!`.
-- **Credential Revocation:** Only the original issuer can revoke a credential. The contract enforces `credential.issuer != caller` checks before allowing revocation.
-- **WASM Upgradability:** Both contracts include an `upgrade(new_wasm_hash)` function restricted to the Admin, ensuring long-term bug fixes and evolution.
-- **Wallet Security**: Uses `StellarWalletsKit` to ensure private keys never touch the DOM or React state. All signing is delegated entirely to the secure Freighter extension.
-- **Data Integrity**: SHA-256 hashing ensures the on-chain `data_hash` is a tamper-proof fingerprint of the full credential data stored off-chain.
 
 ---
 
@@ -360,18 +308,14 @@ Our dual pipeline runs automatically on every push to `main` and on every PR:
 
 1. **Smart Contracts Pipeline** (`contracts-test-build`):
    - Sets up Rust toolchain with `wasm32v1-none` target
-   - Caches Cargo registry & target for fast builds
    - Builds both `cred-issuer` and `credledger-registry` WASM artifacts
    - Runs `cargo test` for contract unit tests
 
 2. **Frontend Pipeline** (`frontend-test-build`):
    - Sets up Node.js v20 with npm cache
    - Installs NPM dependencies
-   - Runs ESLint for code quality
-   - Runs Vitest suite (8 tests)
+   - Runs ESLint and Vitest suite (8 tests)
    - Builds Next.js application
 
 ### Vercel Deployment
 The frontend is continuously deployed to Vercel on every push to `main`. Environment variables are configured in the Vercel dashboard.
-
----
