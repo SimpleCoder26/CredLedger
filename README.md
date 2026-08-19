@@ -25,7 +25,7 @@ The core logic and credential state are secured on the Stellar Testnet. You can 
 
 *   **CredentialRegistry Contract (Core)**: [`CDLEJNHA46O754EAYGOEVSC6KPZUGAGNGM4BYQVJMSLS7Q7OREZD6XVY`](https://stellar.expert/explorer/testnet/contract/CDLEJNHA46O754EAYGOEVSC6KPZUGAGNGM4BYQVJMSLS7Q7OREZD6XVY)
 *   **CredIssuer Contract (RBAC)**: [`CD6EOBIBTAEUVKLNGMN65454HLQTLV2PXYEFXB4U3OCNATX7UCTBPRA5`](https://stellar.expert/explorer/testnet/contract/CD6EOBIBTAEUVKLNGMN65454HLQTLV2PXYEFXB4U3OCNATX7UCTBPRA5)
-*   **Demo Transaction Hash (Issuance)**: [`76489e7c697835bf82bb7e5186ea19c88e8251cc316f384fe99d93c0f620edcb`](https://stellar.expert/explorer/testnet/tx/76489e7c697835bf82bb7e5186ea19c88e8251cc316f384fe99d93c0f620edcb)
+*   **Demo Transaction Hash (Issuance)**: [`e6fb32868b2508841d51cd0aa8cb5cff432de839ae8dd15faaf60b7205b92eba`](https://stellar.expert/explorer/testnet/tx/e6fb32868b2508841d51cd0aa8cb5cff432de839ae8dd15faaf60b7205b92eba)
 *   **Network**: [Stellar Testnet](https://stellar.expert/explorer/testnet)
 *   **Soroban RPC**: [https://soroban-testnet.stellar.org](https://soroban-testnet.stellar.org)
 
@@ -248,15 +248,15 @@ CredLedger/
 
 ### 🔍 Real-time Verification Page
 *Anyone can visit the verification URL or scan the QR code to instantly read the entire credential provenance and verify authenticity against the Stellar ledger via Stellar Expert.*
-**(✅ Successfully verified on Stellar Testnet: Transaction Hash `76489e7c697835bf82bb7e5186ea19c88e8251cc316f384fe99d93c0f620edcb`)**
+**(✅ Successfully verified on Stellar Testnet: Transaction Hash `e6fb32868b2508841d51cd0aa8cb5cff432de839ae8dd15faaf60b7205b92eba`)**
 <div align="center">
-  <img src="demo/img/verifctaion-on-steller-testnet.png" alt="Verification Page" width="800"/>
+  <img src="demo/img/sucessfull-testnet.png" alt="Verification Page" width="800"/>
 </div>
 
 ### 🎓 The Final Product: A Verifiable Certificate
 *A beautifully designed, downloadable PDF certificate with embedded QR code linking to the on-chain verification page.*
 <div align="center">
-  <img src="demo/img/issued-demo-certificate.png" alt="Issued Certificate" width="800"/>
+  <img src="demo/img/an-issued-certific-new.png" alt="Issued Certificate" width="800"/>
 </div>
 
 ### 📱 Fully Mobile Responsive
