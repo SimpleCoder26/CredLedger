@@ -1,26 +1,42 @@
-import React from 'react';
-import { PrismaClient } from '@prisma/client';
-import { ArrowRight, CheckCircle, ExternalLink, Search } from 'lucide-react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
+import { ArrowRight, CheckCircle, Wallet, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { HistoryTableClient } from './HistoryTableClient';
+import { useWalletStore } from '@/store/wallet';
 
-// Use standard Prisma instance
-const prisma = new PrismaClient();
+export default function HistoryPage() {
+  const { address } = useWalletStore();
+  const [certificates, setCertificates] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-// Disable static caching for this dashboard route
-export const dynamic = 'force-dynamic';
+  useEffect(() => {
+    async function fetchPersonalizedCredentials() {
+      if (!address) {
+        setIsLoading(false);
+        return;
+      }
 
-export default async function HistoryPage() {
-  let certificates: any[] = [];
-  try {
-    certificates = await prisma.certificate.findMany({
-      orderBy: { issuedAt: 'desc' },
-    });
-  } catch (error) {
-    console.error("Failed to fetch certificates from database:", error);
-    // Real Postgres solution: if it fails, it means the database is empty or unavailable
-    certificates = [];
-  }
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/credentials?wallet=${address}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch credentials');
+        }
+        
+        const data = await response.json();
+        setCertificates(data.certificates || []);
+      } catch (error) {
+        console.error("Failed to fetch personalized credentials:", error);
+        setCertificates([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchPersonalizedCredentials();
+  }, [address]);
 
   return (
     <div className="p-4 md:p-8 bg-surface-bright min-h-screen">
@@ -37,14 +53,31 @@ export default async function HistoryPage() {
           </div>
         </div>
 
-        {certificates.length === 0 ? (
+        {!address ? (
+          <div className="border-2 border-dashed border-outline-variant p-12 text-center flex flex-col items-center">
+            <div className="w-16 h-16 bg-surface-variant flex items-center justify-center mb-4">
+              <Wallet className="w-8 h-8 text-outline" />
+            </div>
+            <h3 className="font-dot text-[16px] uppercase text-pure-black mb-2">Wallet Disconnected</h3>
+            <p className="font-mono-label text-[12px] text-on-surface-variant mb-6 max-w-md">
+              Please connect your Freighter wallet to view the personalized credentials issued by your account.
+            </p>
+          </div>
+        ) : isLoading ? (
+          <div className="border-2 border-dashed border-outline-variant p-12 text-center flex flex-col items-center">
+            <Loader2 className="w-8 h-8 text-outline animate-spin mb-4" />
+            <p className="font-mono-label text-[12px] text-on-surface-variant uppercase">
+              Loading your issued credentials...
+            </p>
+          </div>
+        ) : certificates.length === 0 ? (
           <div className="border-2 border-dashed border-outline-variant p-12 text-center flex flex-col items-center">
             <div className="w-16 h-16 bg-surface-variant flex items-center justify-center mb-4">
               <CheckCircle className="w-8 h-8 text-outline" />
             </div>
             <h3 className="font-dot text-[16px] uppercase text-pure-black mb-2">No Credentials Issued Yet</h3>
             <p className="font-mono-label text-[12px] text-on-surface-variant mb-6 max-w-md">
-              You haven't issued any certificates on the blockchain. Head over to the issuance page to get started.
+              You haven't issued any certificates on the blockchain from this wallet. Head over to the issuance page to get started.
             </p>
             <Link 
               href="/dashboard/issue"
