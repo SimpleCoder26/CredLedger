@@ -28,7 +28,7 @@ export default function AnalyticsPage() {
         <div>
           <h1 className="font-playfair text-[48px] leading-none text-pure-black font-bold tracking-tight mb-2">Analytics</h1>
           <p className="font-mono-label text-[12px] uppercase text-on-surface-variant tracking-wider">
-            Credential Issuance Metrics
+            Global Credential Issuance Metrics
           </p>
         </div>
       </div>
@@ -36,7 +36,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="rounded-none border-pure-black shadow-[4px_4px_0_0_#0F0E0E]">
           <CardHeader className="pb-2">
-            <CardTitle className="font-dot text-[14px] uppercase text-outline">Total Issued</CardTitle>
+            <CardTitle className="font-dot text-[14px] uppercase text-outline">Total Issued Globally</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-playfair font-bold text-pure-black">{data?.totalIssued || 0}</div>
@@ -67,7 +67,7 @@ export default function AnalyticsPage() {
       <Card className="rounded-none border-pure-black mt-8 shadow-[4px_4px_0_0_#0F0E0E]">
         <CardHeader>
           <CardTitle className="font-dot text-[16px] uppercase tracking-wider text-pure-black border-b border-outline-variant pb-4">
-            Issuance Volume (7 Days)
+            Global Issuance Volume (7 Days)
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
