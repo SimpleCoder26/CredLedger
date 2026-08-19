@@ -271,7 +271,7 @@ CredLedger/
 *Comprehensive testing ensures platform stability. Our suite includes 8 frontend tests (Vitest + React Testing Library + Integration) and 3 Rust Soroban contract tests.*
 **(✅ Ensuring Stability with 8 Passing Frontend Tests + 3 Rust Contract Tests)**
 <div align="center">
-  <img src="demo/img/test-1.png" alt="Frontend Test Suite" width="800"/>
+  <img src="demo/img/test-new.png" alt="Frontend Test Suite" width="800"/>
   <br/>
   <br/>
   <img src="demo/img/test-2-contracts.png" alt="Contract Test Suite" width="800"/>
