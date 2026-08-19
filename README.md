@@ -37,40 +37,40 @@ The core logic and credential state are secured on the Stellar Testnet. You can 
 
 | Requirement | Status & Implementation Details |
 | :--- | :--- |
-| **Wallet Setup** | ✅ Integrated StellarWalletsKit (Freighter) exclusively on Testnet |
-| **Wallet Connection** | ✅ Unified UI component for seamless connect/disconnect with custom Pill design |
-| **Balance Handling** | ✅ Fetches and clearly displays XLM balance via Soroban RPC |
-| **Transaction Flow** | ✅ UI shows success/failure toasts and verified Tx Hash |
-| **Development Standards** | ✅ High-quality UI, wallet integration, and error handling |
-| **Required Deliverables** | ✅ Repo, README, Setup instructions, and 4 required Screenshots |
+| **Wallet Setup** | ✅ Integrated `@creit.tech/stellar-wallets-kit@0.1.2` in `src/service/contract.ts:45` using `defaultModules()` initialized with Freighter exclusively on `Networks.TESTNET`. |
+| **Wallet Connection** | ✅ Built `src/components/ConnectWallet.tsx` managing global state via `zustand` (`src/store/wallet.ts`), capturing `address` and exposing unified connect/disconnect handlers. |
+| **Balance Handling** | ✅ Fetches XLM balance via `rpc.Server('https://soroban-testnet.stellar.org').getAccount(address)` inside `fetchBalance()` in `src/store/wallet.ts:25`. |
+| **Transaction Flow** | ✅ `TransactionBuilder.fromXDR()` broadcasts signed XDR to Soroban RPC in `src/service/contract.ts:63` and parses success/failure into `react-hot-toast` notifications (`src/app/dashboard/issue/page.tsx:150`). |
+| **Development Standards** | ✅ Next.js App Router architecture (`src/app`), strictly typed `interface` definitions in TypeScript, and exhaustive `try-catch` blocks across all API routes (`src/app/api`). |
+| **Required Deliverables** | ✅ Repository is public, `README.md` contains robust architecture diagrams, setup instructions in `# Installation`, and 4 explicit screenshots embedded in `# Visual Proof`. |
 
 ### 🟡 Level 2 - Yellow Belt Submission
 
 | Requirement | Status & Implementation Details |
 | :--- | :--- |
-| **3 Error Types Handled** | ✅ Wallet rejection (`code: -1`), Prisma DB errors, Smart Contract validation failures |
-| **Contract Deployed** | ✅ `CredIssuer` (RBAC) & `CredentialRegistry` (Core) Soroban contracts deployed on Testnet |
-| **Contract Called** | ✅ Frontend successfully calls the deployed smart contracts to issue credentials |
-| **Tx Status Visible** | ✅ Success modals and real-time ledger polling confirm execution |
-| **Meaningful Commits** | ✅ Repository contains 53+ meaningful commits documenting the journey |
-| **Deliverable Met** | ✅ Multi-wallet app with deployed contract and real-time events |
-| **Required Deliverables** | ✅ Live demo, Multi-wallet screenshot, Verifiable Tx Hash |
+| **3 Error Types Handled** | ✅ 1. **Wallet Rejection (`code: -1`)**: Trapped explicitly in `StellarWalletsKit.signTransaction()` try-catch. 2. **Prisma DB Constraints**: `P2002` trapped in `api/organization/route.ts` preventing duplicate wallets. 3. **Smart Contract Panics**: Caught Soroban `WasmVm` Trap `Func(MismatchingParameterLen)` and `UnexpectedSize` via RPC error decoding in `contract.ts:67`. |
+| **Contract Deployed** | ✅ Deployed via `deploy_all.sh` to Soroban Testnet. Core: `CDLE...6XVY` (WASM hash `69af3688...`), RBAC: `CD6E...PRA5` (WASM hash `f7ca6149...`). |
+| **Contract Called** | ✅ `buildIssueCredentialTx` in `contract.ts:28` natively parses strings via `nativeToScVal(credentialId, { type: 'string' })` and invokes `issue_credential()` via `contract.call()`. |
+| **Tx Status Visible** | ✅ Polling logic via `pollTransaction(hash)` in `contract.ts:74` queries `server.getTransaction()` in a 3s interval loop up to 20 attempts before rendering the Success Modal. |
+| **Meaningful Commits** | ✅ 53+ highly descriptive, semantic commits (e.g., `feat(contracts): fix architectural rigidities...`, `fix: deploy properly built wasm with 3 params`) fully documenting the iteration cycle. |
+| **Deliverable Met** | ✅ Functional mult-wallet capable architecture via `stellar-wallets-kit`, deployed Soroban contracts with native cross-contract calls, and live real-time `issued` events. |
+| **Required Deliverables** | ✅ Live Vercel deployment link, Multi-wallet (`demo/img/multi-wallet.png`), and Verifiable Hash (`e6fb32868b25...`) prominently displayed. |
 
 ### 🟠 Level 3 - Orange Belt Submission
 
 | Requirement | Status & Implementation Details |
 | :--- | :--- |
-| **Advanced Contracts** | ✅ Built bespoke `CredIssuer` and `CredentialRegistry` contracts using Rust (Soroban SDK v27) |
-| **Inter-Contract Comm** | ✅ `CredentialRegistry` securely cross-calls `CredIssuer` via `contractimport!` to verify issuer RBAC |
-| **Event Streaming** | ✅ Live Activity Blockchain Explorer actively polls the database for real-time on-chain events |
-| **CI/CD Pipeline** | ✅ GitHub Actions runs Rust contract tests, ESLint, Vitest, and Next.js builds on every push/PR |
-| **Deployment Workflow** | ✅ Automated `deploy.sh` script provided for testnet deployment |
-| **Mobile Responsive** | ✅ Complex dashboards, sidebars, and navigation perfectly optimized for mobile |
-| **Error & Loading States** | ✅ Rich UX loading states (Zustand), transaction lifecycle UI (pending/processing/confirmed/failed), and Toast notifications |
-| **Testing Suite** | ✅ 8 Vitest frontend tests passing + 3 Rust smart contract unit tests passing |
-| **Production Architecture**| ✅ Built on Next.js 16 App Router, Prisma PostgreSQL ORM, Zustand, and Tailwind CSS |
-| **Documentation** | ✅ Comprehensive professional README with architecture diagrams and contract details |
-| **Required Deliverables** | ✅ Video Demo, Mobile/CI screenshots, Contract IDs & Hash, 3+ passing tests |
+| **Advanced Contracts** | ✅ Dual-contract architecture written in pure Rust `no_std`. Uses `env.ledger().timestamp()` in `cred-registry/src/lib.rs:66` for unforgeable issuance timing, preventing client-side spoofing. |
+| **Inter-Contract Comm** | ✅ `CredentialRegistry` safely uses `cred_issuer_contract::Client::new(&env, &certifier_id)` to invoke `is_issuer(&caller)` in `cred-registry/src/lib.rs:54`. |
+| **Event Streaming** | ✅ `env.events().publish((symbol_short!("issued"), credential_id.clone()), ...)` synchronously emits on-chain events (`cred-registry/src/lib.rs:79`) for history tracking. |
+| **CI/CD Pipeline** | ✅ Implemented `.github/workflows/test.yml` running `cargo test` on contracts and `npm run test` on the Next.js frontend for every push to `main`. |
+| **Deployment Workflow** | ✅ Custom bash script `deploy_all.sh` dynamically builds optimized WASM, initializes `CredIssuer`, extracts the dynamic `ISSUER_ID`, and passes it to `CredentialRegistry`'s init sequence. |
+| **Mobile Responsive** | ✅ Leveraged Tailwind CSS breakpoints (`md:`, `lg:`) across complex grids in `src/app/dashboard/layout.tsx` to reflow sidebars into hamburger menus. |
+| **Error & Loading States** | ✅ Global asynchronous `isLoading` state managed by Zustand (`src/store/wallet.ts`), gracefully disabling UI buttons during RPC polling and transaction signing windows. |
+| **Testing Suite** | ✅ 8 distinct frontend Vitest units targeting React components, and 2 extensive Rust integration tests (`test_registry_flow`, `test_unauthorized_revoke`) in `cred-registry/src/test.rs`. |
+| **Production Architecture**| ✅ Built atop Next.js 16 App Router, Prisma ORM targeting Neon serverless Postgres, and `@stellar/stellar-sdk` version `12.x`. |
+| **Documentation** | ✅ Embedded Mermaid.js architecture diagrams (`graph TD` and `sequenceDiagram`) directly detailing the cross-contract execution sequence. |
+| **Required Deliverables** | ✅ Functional YouTube Demo Walkthrough, complete testnet integration, robust README, and passing GitHub Actions pipeline. |
 
 ---
 
