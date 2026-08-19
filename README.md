@@ -8,7 +8,7 @@
 [![Stellar](https://img.shields.io/badge/Network-Stellar_Testnet-black)](https://stellar.org/)
 [![Soroban](https://img.shields.io/badge/Smart_Contracts-Soroban-orange)](https://soroban.stellar.org/)
 
-  <h3>🚀 Live Production Deployment: <a href="https://cred-ledger-coral.vercel.app/">https://cred-ledger-coral.vercel.app/</a></h3>
+  <h3>🚀 Live Demo: <a href="https://cred-ledger-coral.vercel.app/">https://cred-ledger-coral.vercel.app/</a></h3>
   <h3>🎥 Video Walkthrough: <a href="https://youtu.be/_7xV6pcz-0s">https://youtu.be/_7xV6pcz-0s</a></h3>
 
 ![Hero Dashboard](./demo/img/Hero-wallet-connected.png)
@@ -20,7 +20,7 @@
 ---
 
 ## 📖 What is CredLedger?
-CredLedger is a Verifiable Digital Credential Passport. We provide organizations with the tools to issue cryptographic, tamper-evident certificates directly on the Stellar blockchain, ensuring provenance while maintaining a seamless, Web2-like user experience.
+**CredLedger is a blockchain-backed credential passport that enables organizations to issue, revoke, and verify tamper-evident digital credentials through Stellar and Soroban.**
 
 ### The Problem
 The education and professional certification industry is plagued by fraudulent credentials. Fake degrees, forged participation certificates, and unverifiable skill endorsements cost organizations billions in verification overhead and erode trust globally. Traditional PDF certificates can be trivially cloned, edited, or redistributed by malicious actors, making standard verification systems slow, manual, and fundamentally insecure.
@@ -72,6 +72,14 @@ CredLedger Verification Page validates on-chain hash + status
 
 ---
 
+## ⚙️ Credential Lifecycle
+
+- **ISSUED** → Credential hash and metadata recorded securely on-chain.
+- **VERIFIED** → QR scan triggers near-real-time verification, comparing the credential's payload against the immutable Stellar ledger.
+- **REVOKED** → Authorized issuer changes the on-chain status, instantly invalidating all future verification attempts.
+
+---
+
 ## 🏗️ Architecture
 
 To achieve a seamless user experience while maintaining Web3 security, CredLedger leverages a hybrid on-chain/off-chain architecture.
@@ -105,6 +113,22 @@ Issuer ────────────►│ Next.js Application          �
                                    ▼
                               Verifier / QR
 ```
+
+### Data Boundaries
+
+**ON-CHAIN (Soroban Contracts):**
+- Credential ID
+- SHA-256 Payload Hash
+- Issuer Wallet Address
+- Issuance Timestamp
+- Revocation State
+
+**OFF-CHAIN (PostgreSQL / Application):**
+- Recipient Information & Emails
+- Certificate Design Metadata
+- PDF Rendering Engine
+- Analytical Data (Counts, Trends)
+- Application-level History & Sorting
 
 ### Smart Contract Architecture
 
@@ -188,9 +212,9 @@ The core logic and credential state are secured on the Stellar Testnet. You can 
 
 ## 🔒 Security Model
 
-- **Cross-Contract RBAC Validation:** Blockchain logic is immune to local bypass. The `CredentialRegistry` contract forcibly checks the `CredIssuer` contract state on every `issue_credential` call.
+- **Cross-Contract RBAC Validation:** Authorization is enforced on-chain. The `CredentialRegistry` contract independently validates the caller against the `CredIssuer` registry, preventing frontend-level authorization bypasses.
 - **Data Privacy & Personalization:** The Next.js dashboard intelligently routes and isolates credential history queries purely based on the cryptographically connected Freighter wallet session. Issuers exclusively see their own data.
-- **Credential Revocation:** Only the original issuer can revoke a credential. The contract enforces `credential.issuer != caller` checks.
+- **Credential Revocation:** Only the original issuer can revoke a credential. The contract enforces `credential.issuer == caller` logic to ensure only authorized wallet accounts can alter a credential's state.
 - **WASM Upgradability:** Both contracts include an `upgrade(new_wasm_hash)` function restricted to the Admin, ensuring long-term bug fixes.
 - **Wallet Security**: Uses `StellarWalletsKit` to ensure private keys never touch the DOM or React state. All signing is delegated entirely to the secure Freighter extension.
 - **Data Integrity**: SHA-256 hashing ensures the on-chain `data_hash` is a tamper-evident fingerprint of the full credential data stored off-chain.
@@ -268,12 +292,12 @@ To ensure maximum engineering maturity, we clearly document our current architec
 
 | Requirement | Status & Implementation Details |
 | :--- | :--- |
-| **Wallet Setup** | ✅ Integrated `@creit.tech/stellar-wallets-kit@0.1.2` in `src/service/contract.ts:45` using `defaultModules()` initialized with Freighter exclusively on `Networks.TESTNET`. |
+| **Wallet Setup** | ✅ Integrated `@creit.tech/stellar-wallets-kit@2.5.0` in `src/service/contract.ts` initialized with Freighter exclusively on `Networks.TESTNET`. |
 | **Wallet Connection** | ✅ Built `src/components/ConnectWallet.tsx` managing global state via `zustand` (`src/store/wallet.ts`), capturing `address` and exposing unified connect/disconnect handlers. |
-| **Balance Handling** | ✅ Fetches XLM balance via `rpc.Server('https://soroban-testnet.stellar.org').getAccount(address)` inside `fetchBalance()` in `src/store/wallet.ts:25`. |
-| **Transaction Flow** | ✅ `TransactionBuilder.fromXDR()` broadcasts signed XDR to Soroban RPC in `src/service/contract.ts:63` and parses success/failure into `react-hot-toast` notifications (`src/app/dashboard/issue/page.tsx:150`). |
-| **Development Standards** | ✅ Next.js App Router architecture (`src/app`), strictly typed `interface` definitions in TypeScript, and exhaustive `try-catch` blocks across all API routes (`src/app/api`). |
-| **Required Deliverables** | ✅ Repository is public, `README.md` contains robust architecture diagrams, setup instructions in `# Installation`, and core screenshots embedded. |
+| **Balance Handling** | ✅ Fetches XLM balance via `rpc.Server('https://soroban-testnet.stellar.org').getAccount(address)` inside `fetchBalance()`. |
+| **Transaction Flow** | ✅ `TransactionBuilder.fromXDR()` broadcasts signed XDR to Soroban RPC in `src/service/contract.ts` and parses success/failure into notifications. |
+| **Development Standards** | ✅ Next.js App Router architecture (`src/app`), strictly typed `interface` definitions in TypeScript, and exhaustive `try-catch` blocks across all API routes. |
+| **Required Deliverables** | ✅ Repository is public, `README.md` contains robust architecture diagrams, setup instructions, and core screenshots embedded. |
 
 ### 🟡 Level 2 - Yellow Belt
 
@@ -286,18 +310,18 @@ To ensure maximum engineering maturity, we clearly document our current architec
 
 | Requirement | Status & Implementation Details |
 | :--- | :--- |
-| **3 Error Types Handled** | ✅ 1. **Wallet Rejection (`code: -1`)**: Trapped explicitly in `StellarWalletsKit.signTransaction()` try-catch. 2. **Prisma DB Constraints**: `P2002` trapped in `api/organization/route.ts` preventing duplicate wallets. 3. **Smart Contract Panics**: Caught Soroban `WasmVm` Trap `Func(MismatchingParameterLen)` and `UnexpectedSize` via RPC error decoding in `contract.ts:67`. |
-| **Contract Deployed** | ✅ Deployed via `deploy_all.sh` to Soroban Testnet. Core: `CDLE...6XVY` (WASM hash `69af3688...`), RBAC: `CD6E...PRA5` (WASM hash `f7ca6149...`). |
-| **Contract Called** | ✅ `buildIssueCredentialTx` in `contract.ts:28` natively parses strings via `nativeToScVal(credentialId, { type: 'string' })` and invokes `issue_credential()` via `contract.call()`. |
-| **Tx Status Visible** | ✅ Polling logic via `pollTransaction(hash)` in `contract.ts:74` queries `server.getTransaction()` in a 3s interval loop up to 20 attempts before rendering the Success Modal. |
-| **Meaningful Commits** | ✅ 53+ highly descriptive, semantic commits (e.g., `feat(contracts): fix architectural rigidities...`, `fix: deploy properly built wasm with 3 params`) fully documenting the iteration cycle. |
-| **Deliverable Met** | ✅ Functional mult-wallet capable architecture via `stellar-wallets-kit`, deployed Soroban contracts with native cross-contract calls, and live real-time `issued` events. |
-| **Required Deliverables** | ✅ Live Vercel deployment link, Multi-wallet (`demo/img/multi-wallet.png`), and Verifiable Hash (`e6fb32868b25...`) prominently displayed. |
+| **3 Error Types Handled** | ✅ 1. **Wallet Rejection**: Trapped explicitly in `StellarWalletsKit.signTransaction()` try-catch. 2. **Prisma Constraints**: Trapped preventing duplicate wallets. 3. **Smart Contract Panics**: Caught Soroban `WasmVm` Trap `Func(MismatchingParameterLen)`. |
+| **Contract Deployed** | ✅ Deployed via `deploy.sh` to Soroban Testnet. Core: `CDLE...6XVY` (WASM hash `69af3688...`), RBAC: `CD6E...PRA5`. |
+| **Contract Called** | ✅ `buildIssueCredentialTx` in `contract.ts` natively parses strings and invokes `issue_credential()` via `contract.call()`. |
+| **Tx Status Visible** | ✅ Polling logic via `pollTransaction(hash)` queries `server.getTransaction()` in a 3s interval loop. |
+| **Meaningful Commits** | ✅ 53+ highly descriptive, semantic commits (e.g., `feat(contracts): fix architectural rigidities...`) fully documenting the iteration cycle. |
+| **Deliverable Met** | ✅ Functional mult-wallet capable architecture via `stellar-wallets-kit`, deployed Soroban contracts with native cross-contract calls. |
+| **Required Deliverables** | ✅ Live Vercel deployment link, Multi-wallet functionality, and Verifiable Hash prominently displayed. |
 
 ### 🟠 Level 3 - Orange Belt
 
 ### 🧪 Automated CI/CD & Testing Suite
-**(✅ Fully Automated CI/CD Deployment Pipeline via GitHub Actions & 8 Passing Frontend Tests + 3 Rust Contract Tests)**
+**(✅ 8 frontend tests + 3 Rust contract tests (including 2 integration tests) run via GitHub Actions `.github/workflows/ci.yml`)**
 <div align="center">
   <img src="demo/img/ci-cd-pipe-new.png" alt="CI/CD Pipeline" width="800"/>
   <br/><br/>
@@ -308,14 +332,14 @@ To ensure maximum engineering maturity, we clearly document our current architec
 
 | Requirement | Status & Implementation Details |
 | :--- | :--- |
-| **Advanced Contracts** | ✅ Dual-contract architecture written in pure Rust `no_std`. Uses `env.ledger().timestamp()` in `cred-registry/src/lib.rs:66` for unforgeable issuance timing, preventing client-side spoofing. |
-| **Inter-Contract Comm** | ✅ `CredentialRegistry` safely uses `cred_issuer_contract::Client::new(&env, &certifier_id)` to invoke `is_issuer(&caller)` in `cred-registry/src/lib.rs:54`. |
-| **Event Streaming** | ✅ `env.events().publish((symbol_short!("issued"), credential_id.clone()), ...)` synchronously emits on-chain events (`cred-registry/src/lib.rs:79`) for history tracking. |
-| **CI/CD Pipeline** | ✅ Implemented `.github/workflows/test.yml` running `cargo test` on contracts and `npm run test` on the Next.js frontend for every push to `main`. |
-| **Deployment Workflow** | ✅ Custom bash script `deploy_all.sh` dynamically builds optimized WASM, initializes `CredIssuer`, extracts the dynamic `ISSUER_ID`, and passes it to `CredentialRegistry`'s init sequence. |
-| **Mobile Responsive** | ✅ Leveraged Tailwind CSS breakpoints (`md:`, `lg:`) across complex grids in `src/app/dashboard/layout.tsx` to reflow sidebars into hamburger menus. |
-| **Error & Loading States** | ✅ Global asynchronous `isLoading` state managed by Zustand (`src/store/wallet.ts`), gracefully disabling UI buttons during RPC polling and transaction signing windows. |
-| **Testing Suite** | ✅ 8 distinct frontend Vitest units targeting React components, and 2 extensive Rust integration tests (`test_registry_flow`, `test_unauthorized_revoke`) in `cred-registry/src/test.rs`. |
-| **Production Architecture**| ✅ Built atop Next.js 16 App Router, Prisma ORM targeting Neon serverless Postgres, and `@stellar/stellar-sdk` version `12.x`. |
-| **Documentation** | ✅ Embedded Mermaid.js architecture diagrams (`graph TD` and `sequenceDiagram`) directly detailing the cross-contract execution sequence. |
+| **Advanced Contracts** | ✅ Dual-contract architecture written in pure Rust `no_std`. Uses `env.ledger().timestamp()` for unforgeable issuance timing. |
+| **Inter-Contract Comm** | ✅ `CredentialRegistry` safely uses `cred_issuer_contract::Client::new(&env, &certifier_id)` to invoke `is_issuer(&caller)`. |
+| **Event Streaming** | ✅ `env.events().publish((symbol_short!("issued"), credential_id.clone()), ...)` synchronously emits on-chain events. |
+| **CI/CD Pipeline** | ✅ Implemented `.github/workflows/ci.yml` running `cargo test` on contracts and `npm run test` on the Next.js frontend. |
+| **Deployment Workflow** | ✅ Custom bash script `deploy.sh` dynamically builds optimized WASM, initializes `CredIssuer`, extracts the dynamic `ISSUER_ID`, and passes it to `CredentialRegistry`. |
+| **Mobile Responsive** | ✅ Leveraged Tailwind CSS breakpoints across complex grids to reflow sidebars into hamburger menus. |
+| **Error & Loading States** | ✅ Global asynchronous `isLoading` state managed by Zustand gracefully disables UI buttons during RPC polling. |
+| **Testing Suite** | ✅ 8 frontend tests + 3 Rust contract tests (including 2 integration tests: `test_registry_flow`, `test_unauthorized_revoke`). |
+| **Production Architecture**| ✅ Built atop Next.js 16 App Router, Prisma ORM targeting Neon serverless Postgres, and `@stellar/stellar-sdk`. |
+| **Documentation** | ✅ Embedded Mermaid.js architecture diagrams and ASCII boundaries explicitly detailing the hybrid Web3 execution sequence. |
 | **Required Deliverables** | ✅ Functional YouTube Demo Walkthrough, complete testnet integration, robust README, and passing GitHub Actions pipeline. |
