@@ -326,8 +326,6 @@ To ensure maximum engineering maturity, we clearly document our current architec
   <img src="demo/img/ci-cd-pipe-new.png" alt="CI/CD Pipeline" width="800"/>
   <br/><br/>
   <img src="demo/img/test-new.png" alt="Frontend Test Suite" width="800"/>
-  <br/><br/>
-  <img src="demo/img/test-2-contracts.png" alt="Contract Test Suite" width="800"/>
 </div>
 
 | Requirement | Status & Implementation Details |
