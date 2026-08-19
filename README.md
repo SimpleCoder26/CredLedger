@@ -8,7 +8,7 @@
 [![Stellar](https://img.shields.io/badge/Network-Stellar_Testnet-black)](https://stellar.org/)
 [![Soroban](https://img.shields.io/badge/Smart_Contracts-Soroban-orange)](https://soroban.stellar.org/)
 
-  <h3>🚀 Live Production Deployment: CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER</h3>
+  <h3>🚀 Live Production Deployment: <a href="https://cred-ledger-coral.vercel.app/">https://cred-ledger-coral.vercel.app/</a></h3>
   <h3>🎥 Video Walkthrough: <a href="https://youtu.be/_7xV6pcz-0s">https://youtu.be/_7xV6pcz-0s</a></h3>
 
 ![Hero Dashboard](./demo/img/Hero-wallet-connected.png)
@@ -16,6 +16,18 @@
 *"Every credential has a digital passport — cryptographically secure, immutable, and instantly verifiable on the Stellar network to ensure academic and professional authenticity globally."*
 
 </div>
+
+---
+
+## 🛡️ Contract Addresses & Verifiable Links
+
+The core logic and credential state are secured on the Stellar Testnet. You can instantly verify the smart contracts and the latest transactions via Stellar Expert:
+
+*   **CredentialRegistry Contract (Core)**: [`CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER`](https://stellar.expert/explorer/testnet/contract/CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER)
+*   **CredIssuer Contract (RBAC)**: [`CDRKILLGO7B36C3TI7AZHTYGV43R2SPYCLTED3KACC6VOFH3ISPWSNZP`](https://stellar.expert/explorer/testnet/contract/CDRKILLGO7B36C3TI7AZHTYGV43R2SPYCLTED3KACC6VOFH3ISPWSNZP)
+*   **Demo Transaction Hash (Issuance)**: [`76489e7c697835bf82bb7e5186ea19c88e8251cc316f384fe99d93c0f620edcb`](https://stellar.expert/explorer/testnet/tx/76489e7c697835bf82bb7e5186ea19c88e8251cc316f384fe99d93c0f620edcb)
+*   **Network**: [Stellar Testnet](https://stellar.expert/explorer/testnet)
+*   **Soroban RPC**: [https://soroban-testnet.stellar.org](https://soroban-testnet.stellar.org)
 
 ---
 
@@ -209,18 +221,7 @@ CredLedger/
 └── README.md                   # This document
 ```
 
----
 
-## 🛡️ Contract Addresses & Verifiable Links
-
-The contracts have been successfully deployed and initialized on the Stellar Testnet!
-
-*   **CredentialRegistry Contract (Core)**: `CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER`
-*   **CredIssuer Contract (RBAC)**: `CDRKILLGO7B36C3TI7AZHTYGV43R2SPYCLTED3KACC6VOFH3ISPWSNZP`
-*   **Network**: Stellar Testnet
-*   **Soroban RPC**: `https://soroban-testnet.stellar.org`
-
----
 
 ## 📸 Platform Previews
 
