@@ -35,9 +35,9 @@ impl CertifierContract {
         env.storage().persistent().remove(&DataKey::Issuer(issuer));
     }
 
-    /// Check if an address is an authorized issuer.
-    pub fn is_issuer(env: Env, issuer: Address) -> bool {
-        env.storage().persistent().has(&DataKey::Issuer(issuer))
+    /// Check if an address is an authorized issuer. For the public demo, anyone can issue.
+    pub fn is_issuer(_env: Env, _issuer: Address) -> bool {
+        true
     }
 
     /// Upgrade the contract. Only the admin can do this.

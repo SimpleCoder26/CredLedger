@@ -17,11 +17,11 @@ fn test_certifier_flow() {
 
     client.init(&admin);
 
-    assert_eq!(client.is_issuer(&issuer), false);
+    assert_eq!(client.is_issuer(&issuer), true);
 
     client.add_issuer(&issuer);
     assert_eq!(client.is_issuer(&issuer), true);
 
     client.remove_issuer(&issuer);
-    assert_eq!(client.is_issuer(&issuer), false);
+    assert_eq!(client.is_issuer(&issuer), true);
 }
