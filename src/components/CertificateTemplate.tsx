@@ -1,4 +1,6 @@
 import React from 'react';
+import { format } from "date-fns";
+import { getBaseUrl } from "@/lib/utils";
 import { Calendar, Clock, MapPin, Users, ShieldCheck, Link as LinkIcon, Layers, Network } from 'lucide-react';
 import QRCode from "react-qr-code";
 
@@ -136,19 +138,19 @@ export const CertificateTemplate: React.FC<CertificateTemplateProps> = ({
             Scan this QR code or visit
             <br/>
             <a 
-              href={`http://localhost:3000/verify/${credentialId}`} 
+              href={`${getBaseUrl()}/verify/${credentialId}`} 
               target="_blank" 
               rel="noopener noreferrer" 
               style={{ color: "#2563eb" }} 
               className="hover:underline"
             >
-              credledger.com/verify
+              {getBaseUrl().replace(/^https?:\/\//, '')}/verify
             </a>
           </div>
 
           <div style={{ backgroundColor: "#ffffff", borderColor: "#e5e7eb" }} className="w-32 h-32 border p-2 mb-4 rounded-lg shadow-sm flex items-center justify-center relative">
             <QRCode 
-              value={`http://localhost:3000/verify/${credentialId}`}
+              value={`${getBaseUrl()}/verify/${credentialId}`}
               size={110}
               fgColor="#0B2046"
               level="H"

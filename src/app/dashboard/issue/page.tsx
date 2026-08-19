@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { CertificateTemplate } from "@/components/CertificateTemplate";
+import NetworkStatus from "@/components/NetworkStatus";
+import { getBaseUrl } from "@/lib/utils";
 import { ArrowRight, Loader2, UploadCloud, Users, FileText, CheckCircle, Plus, X, Type, ExternalLink } from "lucide-react";
 import html2canvas from "html2canvas";
 import Papa from "papaparse";
@@ -598,7 +600,7 @@ export default function IssuePage() {
                     
                     {blockchainTxHash && (
                       <a 
-                        href={`http://localhost:3000/verify/${generatedCredentialId}`}
+                        href={`${getBaseUrl()}/verify/${generatedCredentialId}`}
                         target="_blank" rel="noopener noreferrer"
                         className="w-full flex justify-center items-center gap-2 border border-[#16a34a] text-[#16a34a] font-dot text-[12px] uppercase py-3 mt-2 hover:bg-[#16a34a]/10 transition-colors"
                       >

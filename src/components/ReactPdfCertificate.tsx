@@ -1,5 +1,7 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image, Font, Link } from '@react-pdf/renderer';
+import { format } from "date-fns";
+import { getBaseUrl } from "@/lib/utils";
 
 // Register fonts if needed, or rely on built-in standard PDF fonts
 // (Times-Roman, Times-Italic, Helvetica, Courier)
@@ -425,8 +427,8 @@ export const ReactPdfCertificate: React.FC<ReactPdfCertificateProps> = ({
           <Text style={styles.scanLabel}>SCAN TO VERIFY</Text>
           <Text style={styles.scanDesc}>
             Scan this QR code or visit{"\n"}
-            <Link src={`http://localhost:3000/verify/${credentialId}`} style={styles.scanLink}>
-              localhost:3000/verify
+            <Link src={`${getBaseUrl()}/verify/${credentialId}`} style={styles.scanLink}>
+              {getBaseUrl().replace(/^https?:\/\//, '')}/verify
             </Link>
           </Text>
           <View style={styles.qrCodeBox}>
