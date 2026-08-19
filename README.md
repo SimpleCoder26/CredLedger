@@ -180,22 +180,47 @@ To achieve a seamless, Web2-like user experience while maintaining Web3 immutabi
 
 ---
 
-## 📸 Platform Previews Gallery
+## 📸 Platform Previews
 
-| 🌟 Hero & Dashboard | 🧰 Multi-Wallet Support |
-| :---: | :---: |
-| *A sleek, professional landing page. Connect your Freighter wallet to sign and submit credentials directly to the Stellar network.*<br/><br/>**(✅ Showcasing Wallet Connection State & Live XLM Balance Retrieval)** | *Seamlessly connect using your preferred Stellar wallet via StellarWalletsKit's unified authentication modal.*<br/><br/>**(✅ Supporting Multiple Wallet Provider Options)** |
-| <img src="demo/img/Hero-wallet-connected.png" width="400"/> | <img src="demo/img/multi-wallet.png" width="400"/> |
+### 🌟 Hero & Dashboard
+*A sleek, professional landing page. Connect your Freighter wallet to sign and submit credentials directly to the Stellar network.*
+**(✅ Showcasing Wallet Connection State & Live XLM Balance Retrieval)**
+<div align="center">
+  <img src="demo/img/Hero-wallet-connected.png" alt="Hero Dashboard" width="800"/>
+</div>
 
-| 📜 Credential Issuance Feedback | 🔍 Real-time Verification Page |
-| :---: | :---: |
-| *Issue credentials directly on-chain. Generates unique, verifiable QR codes and confirms via real-time toast notifications.*<br/><br/>**(✅ Showcasing a Successful Testnet Transaction with Real-time User Feedback)** | *Instantly read the entire credential provenance and verify authenticity against the Stellar ledger.*<br/><br/>**(✅ Successfully verified on Stellar Testnet: Transaction Hash `e6fb32868b2508841d51cd0aa8cb5cff432de839ae8dd15faaf60b7205b92eba`)** |
-| <img src="demo/img/succesful-issue-toast.png" width="400"/> | <img src="demo/img/sucessfull-testnet.png" width="400"/> |
+### 🧰 Multi-Wallet Support
+*Seamlessly connect using your preferred Stellar wallet via StellarWalletsKit's unified authentication modal.*
+**(✅ Supporting Multiple Wallet Provider Options)**
+<div align="center">
+  <img src="demo/img/multi-wallet.png" alt="Multi Wallet Options" width="800"/>
+</div>
 
-| 🎓 The Final Verifiable Certificate | 🎨 Dashboard in Night Mode |
-| :---: | :---: |
-| *A beautifully designed, downloadable PDF certificate with an embedded QR code linking to the on-chain verification page.* | *Premium UI/UX design showcasing a high-quality Night Mode integration for comfortable extended use.* |
-| <img src="demo/img/an-issued-certific-new.png" width="400"/> | <img src="demo/img/dasboard-in-night-mode.png" width="400"/> |
+### 📜 Credential Issuance & Transaction Feedback
+*Issue credentials directly on-chain. The system generates unique, verifiable QR codes and confirms via real-time toast notifications showing the transaction hash.*
+**(✅ Showcasing a Successful Testnet Transaction with Real-time User Feedback)**
+<div align="center">
+  <img src="demo/img/succesful-issue-toast.png" alt="Successful Issue" width="800"/>
+</div>
+
+### 🔍 Real-time Verification Page
+*Anyone can visit the verification URL or scan the QR code to instantly read the entire credential provenance and verify authenticity against the Stellar ledger via Stellar Expert.*
+**(✅ Successfully verified on Stellar Testnet: Transaction Hash `e6fb32868b2508841d51cd0aa8cb5cff432de839ae8dd15faaf60b7205b92eba`)**
+<div align="center">
+  <img src="demo/img/sucessfull-testnet.png" alt="Verification Page" width="800"/>
+</div>
+
+### 🎓 The Final Product: A Verifiable Certificate
+*A beautifully designed, downloadable PDF certificate with an embedded QR code linking to the on-chain verification page.*
+<div align="center">
+  <img src="demo/img/an-issued-certific-new.png" alt="Issued Certificate" width="800"/>
+</div>
+
+### 🎨 Dashboard in Night Mode
+*Premium UI/UX design showcasing a high-quality Night Mode integration for comfortable extended use.*
+<div align="center">
+  <img src="demo/img/dasboard-in-night-mode.png" alt="Night Mode Dashboard" width="800"/>
+</div>
 
 ### 📱 Fully Mobile Responsive
 *The entire application, including complex dashboards, sidebars, and tables, is completely optimized for seamless mobile usage.*
@@ -205,15 +230,20 @@ To achieve a seamless, Web2-like user experience while maintaining Web3 immutabi
   <img src="demo/img/mobile-ui-2.png" alt="Mobile View 2" width="300"/>
 </div>
 
-### 🧪 Automated CI/CD & Testing Suite
-*Comprehensive testing ensures platform stability. Our suite includes 8 frontend tests (Vitest) and 3 Rust Soroban contract tests. GitHub Actions handles automated CI/CD.*
-**(✅ Fully Automated CI/CD Deployment Pipeline via GitHub Actions & 8 Passing Frontend Tests + 3 Rust Contract Tests)**
+### 🧪 Automated Testing Suite
+*Comprehensive testing ensures platform stability. Our suite includes 8 frontend tests (Vitest + React Testing Library + Integration) and 3 Rust Soroban contract tests.*
+**(✅ Ensuring Stability with 8 Passing Frontend Tests + 3 Rust Contract Tests)**
 <div align="center">
-  <img src="demo/img/ci-cd-pipe-new.png" alt="CI/CD Pipeline" width="800"/>
-  <br/><br/>
   <img src="demo/img/test-new.png" alt="Frontend Test Suite" width="800"/>
   <br/><br/>
   <img src="demo/img/test-2-contracts.png" alt="Contract Test Suite" width="800"/>
+</div>
+
+### 🚀 CI/CD Pipeline
+*Automated GitHub Actions trigger on every push and PR to `main`, running ESLint, Vitest, Next.js build, Cargo build, and Cargo test in a dual pipeline.*
+**(✅ Fully Automated CI/CD Deployment Pipeline via GitHub Actions)**
+<div align="center">
+  <img src="demo/img/ci-cd-pipe-new.png" alt="CI/CD Pipeline" width="800"/>
 </div>
 
 ---
