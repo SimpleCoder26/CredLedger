@@ -323,8 +323,12 @@ To ensure maximum engineering maturity, we clearly document our current architec
 ### 🧪 Automated CI/CD & Testing Suite
 **(✅ 8 frontend tests + 3 Rust contract tests (including 2 integration tests) run via GitHub Actions `.github/workflows/ci.yml`)**
 <div align="center">
+  <b>1. Automated GitHub Actions CI/CD Pipeline</b><br/>
   <img src="demo/img/ci-cd-pipe-new.png" alt="CI/CD Pipeline" width="800"/>
-  <br/><br/>
+  
+  <br/><br/><br/>
+  
+  <b>2. Local Frontend Test Suite (Vitest)</b><br/>
   <img src="demo/img/test-new.png" alt="Frontend Test Suite" width="800"/>
 </div>
 
