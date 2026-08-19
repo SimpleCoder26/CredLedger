@@ -1,0 +1,76 @@
+name: CredLedger CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # ------------------------------------------------------------------
+  # SMART CONTRACTS PIPELINE
+  # ------------------------------------------------------------------
+  contracts-test-build:
+    name:  Smart Contracts (Test & Build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./contracts
+    steps:
+      - name: 🛎️ Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: ⚙️ Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          target: wasm32v1-none
+          
+      - name: 📦 Cache Cargo registry & target
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            contracts/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          
+      - name: 🔨 Build CredIssuer Wasm Artifact
+        run: cargo build -p cred-issuer --target wasm32v1-none --release
+        
+      - name: 🔨 Build Registry Wasm Artifact
+        run: cargo build -p credledger-registry --target wasm32v1-none --release
+        
+      - name: 🧪 Run Contract Unit Tests
+        run: cargo test
+
+  # ------------------------------------------------------------------
+  # FRONTEND PIPELINE
+  # ------------------------------------------------------------------
+  frontend-test-build:
+    name:  Frontend (Lint, Test, Build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: ⚙️ Setup Node.js (v20)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          cache-dependency-path: './package-lock.json'
+          
+      - name: 📦 Install NPM Dependencies
+        working-directory: ./
+        run: npm install --no-package-lock --legacy-peer-deps
+        
+      - name: 🧹 Run ESLint
+        run: npm run lint
+        
+      - name: 🧪 Run Vitest Suite
+        run: npm run test
+        
+      - name: 🔨 Build Next.js Application
+        run: npx next build
+        
+
