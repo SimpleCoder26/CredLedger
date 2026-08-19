@@ -281,7 +281,7 @@ CredLedger/
 *Automated GitHub Actions trigger on every push and PR to `main`, running ESLint, Vitest, Next.js build, Cargo build, and Cargo test in a dual pipeline.*
 **(✅ Fully Automated CI/CD Deployment Pipeline via GitHub Actions)**
 <div align="center">
-  <img src="demo/img/CI-CD.png" alt="CI/CD Pipeline" width="800"/>
+  <img src="demo/img/ci-cd-pipe-new.png" alt="CI/CD Pipeline" width="800"/>
 </div>
 
 ### 🎨 Dashboard in Night Mode
