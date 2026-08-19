@@ -8,7 +8,7 @@
 [![Stellar](https://img.shields.io/badge/Network-Stellar_Testnet-black)](https://stellar.org/)
 [![Soroban](https://img.shields.io/badge/Smart_Contracts-Soroban-orange)](https://soroban.stellar.org/)
 
-  <h3>🚀 Live Production Deployment: CBIMEDELSTEU2PZ5W3U7JZVRQNC75Q6VHP3JTVEOEUZ2DJEPPFTBIJKF</h3>
+  <h3>🚀 Live Production Deployment: CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER</h3>
   <h3>🎥 Video Walkthrough: <a href="https://youtu.be/_7xV6pcz-0s">https://youtu.be/_7xV6pcz-0s</a></h3>
 
 ![Hero Dashboard](./demo/img/Hero-wallet-connected.png)
@@ -215,7 +215,8 @@ CredLedger/
 
 The contracts have been successfully deployed and initialized on the Stellar Testnet!
 
-*   **CredentialRegistry Contract (Core)**: `CBIMEDELSTEU2PZ5W3U7JZVRQNC75Q6VHP3JTVEOEUZ2DJEPPFTBIJKF`
+*   **CredentialRegistry Contract (Core)**: `CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER`
+*   **CredIssuer Contract (RBAC)**: `CDRKILLGO7B36C3TI7AZHTYGV43R2SPYCLTED3KACC6VOFH3ISPWSNZP`
 *   **Network**: Stellar Testnet
 *   **Soroban RPC**: `https://soroban-testnet.stellar.org`
 
@@ -246,14 +247,15 @@ The contracts have been successfully deployed and initialized on the Stellar Tes
 
 ### 🔍 Real-time Verification Page
 *Anyone can visit the verification URL or scan the QR code to instantly read the entire credential provenance and verify authenticity against the Stellar ledger via Stellar Expert.*
+**(✅ Successfully verified on Stellar Testnet: Transaction Hash `76489e7c697835bf82bb7e5186ea19c88e8251cc316f384fe99d93c0f620edcb`)**
 <div align="center">
-  <img src="demo/img/demo-verification.png" alt="Verification Page" width="800"/>
+  <img src="demo/img/verifctaion-on-steller-testnet.png" alt="Verification Page" width="800"/>
 </div>
 
 ### 🎓 The Final Product: A Verifiable Certificate
 *A beautifully designed, downloadable PDF certificate with embedded QR code linking to the on-chain verification page.*
 <div align="center">
-  <img src="demo/img/an-issued-certificate.png" alt="Issued Certificate" width="800"/>
+  <img src="demo/img/issued-demo-certificate.png" alt="Issued Certificate" width="800"/>
 </div>
 
 ### 📱 Fully Mobile Responsive
@@ -318,7 +320,7 @@ Create a `.env.local` file at the root:
 ```env
 NEXT_PUBLIC_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
 NEXT_PUBLIC_SOROBAN_NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
-NEXT_PUBLIC_REGISTRY_CONTRACT_ID=CBIMEDELSTEU2PZ5W3U7JZVRQNC75Q6VHP3JTVEOEUZ2DJEPPFTBIJKF
+NEXT_PUBLIC_REGISTRY_CONTRACT_ID=CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER
 ```
 
 ### Installation
