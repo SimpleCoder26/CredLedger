@@ -11,9 +11,10 @@ interface SettingsState {
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
-      organizationName: "Acme University",
+      organizationName: "Your Organization",
+      organizationWebsite: "",
       defaultIssuerName: "Admin",
-      contactEmail: "admin@acme.edu",
+      contactEmail: "admin@organization.com",
       setSettings: (settings) => set((state) => ({ ...state, ...settings })),
     }),
     {

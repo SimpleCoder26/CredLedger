@@ -258,7 +258,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-outline-variant pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="font-dot text-[12px] text-outline uppercase">© 2026 CREDLEDGER TECHNOLOGIES</div>
+            <div className="font-dot text-[12px] text-outline uppercase">© 2026 MD SANAULLAH ANSARI</div>
             <div className="flex gap-6">
               <Link className="font-dot text-[12px] text-outline hover:text-pure-black uppercase transition-colors" href="#">Terms of Service</Link>
               <Link className="font-dot text-[12px] text-outline hover:text-pure-black uppercase transition-colors" href="#">Privacy Policy</Link>
