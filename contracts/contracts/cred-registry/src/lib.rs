@@ -44,7 +44,6 @@ impl CredentialRegistry {
         caller: Address,
         credential_id: String,
         data_hash: String,
-        issue_date: u64,
     ) {
         caller.require_auth();
 
@@ -63,6 +62,8 @@ impl CredentialRegistry {
         if env.storage().persistent().has(&cred_key) {
             panic!("Credential already exists");
         }
+
+        let issue_date = env.ledger().timestamp();
 
         let credential = Credential {
             issuer: caller.clone(),
@@ -106,6 +107,13 @@ impl CredentialRegistry {
     pub fn verify_credential(env: Env, credential_id: String) -> Option<Credential> {
         let key = DataKey::Credential(credential_id);
         env.storage().persistent().get(&key)
+    }
+
+    /// Update the RBAC Certifier Contract Address. Only the admin can do this.
+    pub fn set_issuer_contract(env: Env, new_contract: Address) {
+        let admin: Address = env.storage().instance().get(&DataKey::Admin).expect("Not initialized");
+        admin.require_auth();
+        env.storage().instance().set(&DataKey::CredIssuerContract, &new_contract);
     }
 
     /// Upgrade the contract. Only the admin can do this.

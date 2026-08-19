@@ -24,12 +24,11 @@ export async function buildIssueCredentialTx(
 
   const contract = new Contract(REGISTRY_ID);
 
-  // issue_credential(caller: Address, credential_id: String, data_hash: String, issue_date: u64)
+  // issue_credential(caller: Address, credential_id: String, data_hash: String)
   const args = [
     new Address(address).toScVal(),
     nativeToScVal(credentialId, { type: 'string' }),
-    nativeToScVal(dataHash, { type: 'string' }),
-    nativeToScVal(issueDate, { type: 'u64' })
+    nativeToScVal(dataHash, { type: 'string' })
   ];
 
   const tx = new TransactionBuilder(account, { fee: "100000", networkPassphrase })

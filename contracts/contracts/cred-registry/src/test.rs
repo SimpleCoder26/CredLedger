@@ -30,14 +30,14 @@ fn test_registry_flow() {
 
     let cred_id = String::from_str(&env, "CRD-001");
     let data_hash = String::from_str(&env, "abc123hash");
-    let issue_date = 1670000000;
+    let expected_issue_date = env.ledger().timestamp();
 
-    client.issue_credential(&issuer, &cred_id, &data_hash, &issue_date);
+    client.issue_credential(&issuer, &cred_id, &data_hash);
 
     let credential = client.verify_credential(&cred_id).unwrap();
     assert_eq!(credential.issuer, issuer);
     assert_eq!(credential.data_hash, data_hash);
-    assert_eq!(credential.issue_date, issue_date);
+    assert_eq!(credential.issue_date, expected_issue_date);
     assert_eq!(credential.is_revoked, false);
 
     // Verify events
@@ -66,9 +66,8 @@ fn test_unauthorized_revoke() {
 
     let cred_id = String::from_str(&env, "CRD-002");
     let data_hash = String::from_str(&env, "hack123hash");
-    let issue_date = 1670000000;
 
-    client.issue_credential(&issuer, &cred_id, &data_hash, &issue_date);
+    client.issue_credential(&issuer, &cred_id, &data_hash);
 
     // Hacker tries to revoke, should panic
     client.revoke_credential(&hacker, &cred_id);

@@ -23,8 +23,8 @@
 
 The core logic and credential state are secured on the Stellar Testnet. You can instantly verify the smart contracts and the latest transactions via Stellar Expert:
 
-*   **CredentialRegistry Contract (Core)**: [`CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER`](https://stellar.expert/explorer/testnet/contract/CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER)
-*   **CredIssuer Contract (RBAC)**: [`CDRKILLGO7B36C3TI7AZHTYGV43R2SPYCLTED3KACC6VOFH3ISPWSNZP`](https://stellar.expert/explorer/testnet/contract/CDRKILLGO7B36C3TI7AZHTYGV43R2SPYCLTED3KACC6VOFH3ISPWSNZP)
+*   **CredentialRegistry Contract (Core)**: [`CBD6POEH4EHK2L2PV34DT6JN7Q76QH3PCC5U4GTTAKOB745NHGGIMJWB`](https://stellar.expert/explorer/testnet/contract/CBD6POEH4EHK2L2PV34DT6JN7Q76QH3PCC5U4GTTAKOB745NHGGIMJWB)
+*   **CredIssuer Contract (RBAC)**: [`CCDOW6RYCCFH4GIDYDKXDLYGVW745NPLNMUOIVVFL2D6GV2GRQKDDRNH`](https://stellar.expert/explorer/testnet/contract/CCDOW6RYCCFH4GIDYDKXDLYGVW745NPLNMUOIVVFL2D6GV2GRQKDDRNH)
 *   **Demo Transaction Hash (Issuance)**: [`76489e7c697835bf82bb7e5186ea19c88e8251cc316f384fe99d93c0f620edcb`](https://stellar.expert/explorer/testnet/tx/76489e7c697835bf82bb7e5186ea19c88e8251cc316f384fe99d93c0f620edcb)
 *   **Network**: [Stellar Testnet](https://stellar.expert/explorer/testnet)
 *   **Soroban RPC**: [https://soroban-testnet.stellar.org](https://soroban-testnet.stellar.org)
@@ -321,7 +321,7 @@ Create a `.env.local` file at the root:
 ```env
 NEXT_PUBLIC_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
 NEXT_PUBLIC_SOROBAN_NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
-NEXT_PUBLIC_REGISTRY_CONTRACT_ID=CAXIO2PD53VT3QFDYFS66CPIERQ7UWBRYDQMC4FWL357TYAVHNATBQER
+NEXT_PUBLIC_REGISTRY_CONTRACT_ID=CBD6POEH4EHK2L2PV34DT6JN7Q76QH3PCC5U4GTTAKOB745NHGGIMJWB
 ```
 
 ### Installation
