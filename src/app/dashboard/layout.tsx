@@ -66,7 +66,7 @@ export default function DashboardLayout({
 
         <div className="p-4 border-t border-primary flex flex-col gap-2">
           <a 
-            href="#PLACEHOLDER_GOOGLE_FORM_LINK"
+            href="https://forms.gle/TyfSWMwf9fFKWXn19"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 px-3 py-3 font-dot text-[14px] uppercase text-pure-black bg-surface-bright hover:bg-outline-variant transition-colors w-full border border-primary"
