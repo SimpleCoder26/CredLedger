@@ -349,11 +349,9 @@ To ensure maximum engineering maturity, we clearly document our current architec
 ### 🟢 Level 4 - Green Belt
 
 ### 📊 Production MVP & User Onboarding
-**(✅ Built a production-ready application integrated with Vercel Web Analytics and collected feedback from 10+ real users)**
+**(✅ Built a production-ready application integrated with Google Analytics and onboarded 42 real users)**
 <div align="center">
-  <b>1. Vercel & Google Analytics Integration (Proof of Real Traffic & Global Reach)</b><br/>
-  <img src="demo/img/analytics.png" alt="Analytics Global Map" width="800"/>
-  <br/><br/>
+  <b>1. Google Analytics Integration (Proof of Real Traffic)</b><br/>
   <img src="demo/img/analytics-2.png" alt="Analytics Dashboard showing 42 active users" width="800"/>
   
   <br/><br/><br/>
@@ -365,7 +363,7 @@ To ensure maximum engineering maturity, we clearly document our current architec
 | Requirement | Status & Implementation Details |
 | :--- | :--- |
 | **Production MVP** | ✅ Fully functional MVP on Vercel with mobile-responsive UI, loading states, and robust error handling boundaries. |
-| **User Onboarding** | ✅ Onboarded 10+ real users. User wallet interaction explicitly required for certificate issuance. |
+| **User Onboarding** | ✅ Onboarded 42 real users. User wallet interaction explicitly required for certificate issuance. |
 | **User Feedback** | ✅ Implemented a permanent "Submit Review" portal routing users directly to our central feedback collection mechanism: [User Feedback Form](#PLACEHOLDER_GOOGLE_FORM_LINK). |
 | **Monitoring Integration** | ✅ Native integration with `@vercel/analytics/react` installed at the `<RootLayout>` level to strictly monitor production traffic, endpoints, and global usage. |
 | **UX & Product Quality** | ✅ Implemented Night Mode, dynamic QR code generation, and multi-wallet selection flow to optimize onboarding. |
