@@ -5,6 +5,7 @@ import Providers from "@/components/Providers";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";
+import { FloatingFeedbackButton } from "@/components/FloatingFeedbackButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
             <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
               {children}
               <Analytics />
+              <FloatingFeedbackButton />
             </ThemeProvider>
           </Providers>
         </ErrorBoundary>
