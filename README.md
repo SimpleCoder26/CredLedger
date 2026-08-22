@@ -351,8 +351,10 @@ To ensure maximum engineering maturity, we clearly document our current architec
 ### 📊 Production MVP & User Onboarding
 **(✅ Built a production-ready application integrated with Vercel Web Analytics and collected feedback from 10+ real users)**
 <div align="center">
-  <b>1. Vercel Web Analytics Dashboard (Proof of Real Traffic)</b><br/>
-  <img src="demo/img/analytics-placeholder.png" alt="Analytics Dashboard" width="800"/>
+  <b>1. Vercel & Google Analytics Integration (Proof of Real Traffic & Global Reach)</b><br/>
+  <img src="demo/img/analytics.png" alt="Analytics Global Map" width="800"/>
+  <br/><br/>
+  <img src="demo/img/analytics-2.png" alt="Analytics Dashboard showing 42 active users" width="800"/>
   
   <br/><br/><br/>
   
