@@ -73,7 +73,15 @@ export function MobileSidebar() {
           })}
         </nav>
 
-        <div className="p-4 border-t border-primary mt-auto">
+        <div className="p-4 border-t border-primary mt-auto flex flex-col gap-2">
+          <a 
+            href="#PLACEHOLDER_GOOGLE_FORM_LINK"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 px-3 py-3 font-dot text-[14px] uppercase text-pure-black bg-surface-bright hover:bg-outline-variant transition-colors w-full border border-primary"
+          >
+            Submit Review
+          </a>
           <Link 
             href="/" 
             className="flex items-center justify-center gap-2 px-3 py-3 font-dot text-[14px] uppercase text-pure-white bg-primary hover:bg-inverse-surface transition-colors w-full"
