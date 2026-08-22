@@ -10,13 +10,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required credential data' }, { status: 400 });
     }
 
-    // Find or create organization based on wallet or provided name
+    // Find or create organization based strictly on wallet address
     let org = null;
     if (walletAddress) {
       org = await prisma.organization.findFirst({ where: { wallet: walletAddress } });
     }
     
     if (org) {
+      // Org exists for this wallet. Update name if changed.
       if (organizationName && org.name !== organizationName) {
         org = await prisma.organization.update({ 
           where: { id: org.id }, 
@@ -25,17 +26,19 @@ export async function POST(req: Request) {
       }
     } else {
       const orgName = organizationName || 'Default Organization';
-      org = await prisma.organization.findFirst({ where: { name: orgName } });
-      
-      if (!org) {
+      if (walletAddress) {
+        // ALWAYS create a new isolated organization for a new wallet
         org = await prisma.organization.create({
-          data: { name: orgName, wallet: walletAddress || null }
+          data: { name: orgName, wallet: walletAddress }
         });
-      } else if (walletAddress && !org.wallet) {
-        org = await prisma.organization.update({ 
-          where: { id: org.id }, 
-          data: { wallet: walletAddress } 
-        });
+      } else {
+        // Fallback if no wallet is provided (edge case)
+        org = await prisma.organization.findFirst({ where: { name: orgName } });
+        if (!org) {
+          org = await prisma.organization.create({
+            data: { name: orgName, wallet: null }
+          });
+        }
       }
     }
 
